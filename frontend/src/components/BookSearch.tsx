@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {apiFetch} from "../services/api.ts";
 
 interface Book {
     title: string | null;
@@ -17,11 +18,8 @@ export const BookSearch: React.FC = () => {
         if (!query) return;
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:8000/api/books?q=${encodeURIComponent(query)}`);
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            const data = await response.json();
+            const data = await apiFetch<any>(`http://localhost:8000/api/books?q=${encodeURIComponent(query)}`);
+
             setBooks(data.member ?? []);
         } catch (err) {
             console.error(err);
