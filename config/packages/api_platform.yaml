@@ -1,7 +1,13 @@
 api_platform:
     title: Book manager
     version: 1.0.0
+    mapping:
+        paths:
+            - '%kernel.project_dir%/src/Entity'
     defaults:
-        stateless: true
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
+        use_symfony_listeners: true
+    formats:
+        jsonld: [ 'application/ld+json' ]
+        json: [ 'application/json' ]
