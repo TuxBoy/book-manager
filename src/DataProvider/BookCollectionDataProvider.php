@@ -7,11 +7,12 @@ namespace App\DataProvider;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Dto\SearchBook;
-use App\Service\BookApiService;
+use App\Service\BookApiServiceInterface;
+use App\Service\BookGoogleApiService;
 
 final readonly class BookCollectionDataProvider implements ProviderInterface
 {
-    public function __construct(private BookApiService $bookApiService)
+    public function __construct(private BookApiServiceInterface $bookApiService)
     {
     }
 

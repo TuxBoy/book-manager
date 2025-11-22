@@ -6,7 +6,7 @@ namespace App\Service;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final readonly class BookApiService
+final readonly class BookGoogleApiService implements BookApiServiceInterface
 {
     public function __construct(private HttpClientInterface $httpClient)
     {

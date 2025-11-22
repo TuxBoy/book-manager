@@ -14,26 +14,12 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
-final class BookTest extends ApiTestCase
+final class BookTest extends AbstractApiTestCase
 {
     use ResetDatabase, Factories;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        static::$alwaysBootKernel = false;
-    }
-
     public function testAddBookToUserBookTech(): void
     {
-        $user = UserFactory::createOne([
-            'password' => password_hash('password', PASSWORD_BCRYPT),
-        ]);
-
-        $token = self::getContainer()->get('lexik_jwt_authentication.jwt_manager')
-            ->create($user);
-
         $payload = [
             'isbn' => '9782070368228',
             'title' => 'Test Book',
@@ -42,11 +28,7 @@ final class BookTest extends ApiTestCase
             'image' => 'https://example.com/image.jpg',
         ];
 
-        $response = static::createClient()->request('POST', '/api/users/me/books', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Content-Type' => 'application/json',
-            ],
+        static::requestWithToken('POST', '/api/users/me/books', [
             'json' => $payload
         ]);
 
@@ -65,7 +47,7 @@ final class BookTest extends ApiTestCase
         /** @var BookRepository $bookRepository */
         $bookRepository = $this->getContainer()->get('doctrine')->getRepository(Book::class);
         $userBook = $userBookRepository->findOneBy([
-            'user' => $user,
+            'user' => static::$user,
             'book' => $bookRepository->findByIsbn('9782070368228'),
         ]);
 
