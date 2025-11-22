@@ -13,6 +13,8 @@ export const BookSearch: React.FC = () => {
     const [query, setQuery] = useState("");
     const [books, setBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState(false);
+    const [adding, setAdding] = useState<Record<string, boolean>>({})
+    const [message, setMessage] = useState<string | null>(null)
 
     const handleSearch = async () => {
         if (!query) return;
@@ -21,6 +23,7 @@ export const BookSearch: React.FC = () => {
             const data = await apiFetch<any>(`http://localhost:8000/api/books?q=${encodeURIComponent(query)}`);
 
             setBooks(data.member ?? []);
+            setMessage(null)
         } catch (err) {
             console.error(err);
         } finally {
@@ -28,9 +31,38 @@ export const BookSearch: React.FC = () => {
         }
     };
 
+    const handleAddBook = async (book: Book) => {
+        if (!book.isbn) {
+            return;
+        }
+
+        setAdding((prev) => ({...prev, [book.isbn!]: true}));
+
+        try {
+            await apiFetch(`http://localhost:8000/api/users/me/books`, {
+                method: 'POST',
+                body: JSON.stringify({ isbn: book.isbn, title: book.title }),
+            })
+            setMessage(`Le livre "${book.title}" a été ajouté à votre BookTech !`);
+        } catch (err) {
+            console.error(err)
+            setMessage("Erreur lors de l'ajout du livre. Vérifiez que vous êtes connecté.");
+        } finally {
+            setAdding((prev) => ({ ...prev, [book.isbn!]: false }));
+        }
+    }
+
     return (
         <div className="min-h-screen bg-base-100 text-base-content p-6">
             <h1 className="text-3xl font-bold mb-6">Rechercher un livre</h1>
+
+            {message && (
+                <div className="alert alert-info mb-4 shadow-lg">
+                    <div>
+                        <span>{message}</span>
+                    </div>
+                </div>
+            )}
 
             <div className="flex gap-2 mb-6">
                 <input
@@ -58,6 +90,14 @@ export const BookSearch: React.FC = () => {
                             <p className="text-sm text-gray-600">{book.authors.join(", ")}</p>
                             {book.description && <p className="text-sm mt-2 line-clamp-3">{book.description}</p>}
                             {book.isbn && <p className="text-xs mt-2">ISBN: {book.isbn}</p>}
+
+                            <button
+                                className="btn btn-secondary mt-2"
+                                onClick={() => handleAddBook(book)}
+                                disabled={adding[book.isbn ?? ""] ?? false}
+                            >
+                                {adding[book.isbn ?? ""] ? "Ajout en cours..." : "Ajouter à ma BookTech"}
+                            </button>
                         </div>
                     </div>
                 ))}
