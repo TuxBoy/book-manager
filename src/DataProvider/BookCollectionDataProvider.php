@@ -6,7 +6,7 @@ namespace App\DataProvider;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\Dto\Book;
+use App\Dto\SearchBook;
 use App\Service\BookApiService;
 
 final readonly class BookCollectionDataProvider implements ProviderInterface
@@ -16,7 +16,7 @@ final readonly class BookCollectionDataProvider implements ProviderInterface
     }
 
     /**
-     * @return array<Book>
+     * @return array<SearchBook>
      */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
     {
@@ -32,7 +32,7 @@ final readonly class BookCollectionDataProvider implements ProviderInterface
 
         foreach ($items as $item) {
             $info = $item['volumeInfo'];
-            $book = new Book();
+            $book = new SearchBook();
             $book->title = $info['title'] ?? null;
             $book->authors = $info['author'] ?? [];
             $book->description = $info['description'] ?? null;

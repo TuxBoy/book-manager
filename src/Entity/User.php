@@ -8,12 +8,14 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
 use App\DataProcessor\UserRegistrationProcessor;
 use App\Dto\RegisterUserInput;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Attribute\Groups;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     operations: [
         new Post(
@@ -34,6 +36,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type:"string")]
     private ?string $password = null;
+
+    #[ORM\OneToMany(targetEntity: UserBook::class, mappedBy: "user", cascade: ["persist", "remove"])]
+    private Collection $userBooks;
+
+    public function __construct()
+    {
+        $this->userBooks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -73,6 +83,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function eraseCredentials(): void {}
+
+    public function addUserBook(UserBook $userBook): self
+    {
+        if (!$this->userBooks->contains($userBook)) {
+            $this->userBooks[] = $userBook;
+            $userBook->user = $this;
+        }
+
+        return $this;
+    }
+
+    public function removeUserBook(UserBook $userBook): self
+    {
+        if ($this->userBooks->removeElement($userBook)) {
+            if ($userBook->user === $this) {
+                $userBook->user = null;
+            }
+        }
+
+        return $this;
+    }
 }
 
 
