@@ -41,7 +41,13 @@ export const BookSearch: React.FC = () => {
         try {
             await apiFetch(`http://localhost:8000/api/users/me/books`, {
                 method: 'POST',
-                body: JSON.stringify({ isbn: book.isbn, title: book.title }),
+                body: JSON.stringify({
+                    isbn: book.isbn,
+                    title: book.title,
+                    image: book.image,
+                    description: book.description,
+                    authors: book.authors
+                }),
             })
             setMessage(`Le livre "${book.title}" a été ajouté à votre BookTech !`);
         } catch (err) {

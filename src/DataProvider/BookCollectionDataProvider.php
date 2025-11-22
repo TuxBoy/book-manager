@@ -35,7 +35,7 @@ final readonly class BookCollectionDataProvider implements ProviderInterface
             $info = $item['volumeInfo'];
             $book = new SearchBook();
             $book->title = $info['title'] ?? null;
-            $book->authors = $info['author'] ?? [];
+            $book->authors = $info['authors'] ?? [];
             $book->description = $info['description'] ?? null;
             $book->image = $info['imageLinks']['thumbnail'] ?? null;
 
