@@ -36,13 +36,6 @@ jobs:
                     ini-values: post_max_size=256M, upload_max_filesize=256M
                     coverage: none
 
-            # Créer les fichiers JWT à partir des secrets
-            -   name: Set up JWT keys
-                run: |
-                    mkdir -p config/jwt
-                    echo "$JWT_PRIVATE_KEY" > config/jwt/private.pem
-                    echo "$JWT_PUBLIC_KEY" > config/jwt/public.pem
-                    chmod 600 config/jwt/private.pem config/jwt/public.pem
             -   name: Cache Composer dependencies
                 uses: actions/cache@v4
                 with:
