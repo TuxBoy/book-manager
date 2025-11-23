@@ -6,17 +6,18 @@ namespace App\DataProvider;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\Dto\Book;
-use App\Service\BookApiService;
+use App\Dto\SearchBook;
+use App\Service\BookApiServiceInterface;
+use App\Service\BookGoogleApiService;
 
 final readonly class BookCollectionDataProvider implements ProviderInterface
 {
-    public function __construct(private BookApiService $bookApiService)
+    public function __construct(private BookApiServiceInterface $bookApiService)
     {
     }
 
     /**
-     * @return array<Book>
+     * @return array<SearchBook>
      */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
     {
@@ -32,9 +33,9 @@ final readonly class BookCollectionDataProvider implements ProviderInterface
 
         foreach ($items as $item) {
             $info = $item['volumeInfo'];
-            $book = new Book();
+            $book = new SearchBook();
             $book->title = $info['title'] ?? null;
-            $book->authors = $info['author'] ?? [];
+            $book->authors = $info['authors'] ?? [];
             $book->description = $info['description'] ?? null;
             $book->image = $info['imageLinks']['thumbnail'] ?? null;
 

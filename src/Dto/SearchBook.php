@@ -10,6 +10,7 @@ use App\DataProvider\BookCollectionDataProvider;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
+    shortName: 'SearchBook',
     operations: [
         new GetCollection(
             uriTemplate: '/books',
@@ -17,9 +18,9 @@ use Symfony\Component\Serializer\Attribute\Groups;
         )
     ],
     normalizationContext: ['groups' => ['read']],
-    paginationEnabled: false,
+    paginationEnabled: false
 )]
-final class Book
+final class SearchBook
 {
     #[Groups('read')]
     public ?string $title = null;
