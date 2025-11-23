@@ -21,7 +21,7 @@ final class SearchBookTest extends AbstractApiTestCase
                 [
                     'volumeInfo' => [
                         'title' => 'Harry Potter and the Philosopher\'s Stone',
-                        'author' => ['J.K. Rowling'],
+                        'authors' => ['J.K. Rowling'],
                         'description' => 'Magic book description',
                         'imageLinks' => ['thumbnail' => 'http://example.com/thumb.jpg'],
                         'industryIdentifiers' => [
