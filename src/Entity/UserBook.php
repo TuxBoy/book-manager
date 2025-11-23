@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\DataProcessor\AddBookToUserProcessor;
+use App\DataProvider\GetUserBooksCollectionProvider;
 use App\Dto\AddBookToUser;
 use App\Repository\UserBookRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,6 +25,11 @@ use Doctrine\ORM\Mapping\Table;
             input: AddBookToUser::class,
             name: 'add_book',
             processor: AddBookToUserProcessor::class,
+        ),
+        new GetCollection(
+            uriTemplate: '/users/me/books',
+            security: "is_granted('ROLE_USER')",
+            provider: GetUserBooksCollectionProvider::class,
         ),
     ]
 )]

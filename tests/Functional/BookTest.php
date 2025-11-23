@@ -6,6 +6,7 @@ namespace App\Tests\Functional;
 
 use App\Entity\Book;
 use App\Entity\UserBook;
+use App\Factory\UserBookFactory;
 use App\Factory\UserFactory;
 use App\Repository\BookRepository;
 use App\Repository\UserBookRepository;
@@ -91,6 +92,49 @@ final class BookTest extends AbstractApiTestCase
                 'Content-Type' => 'application/json',
             ],
             'json' => $payload,
+        ]);
+
+        $this->assertResponseStatusCodeSame(401);
+    }
+
+    public function testGetUserBooks(): void
+    {
+        UserBookFactory::createMany(number: 20);
+        UserBookFactory::createMany(number: 10, attributes: ['user' => static::$user]);
+
+        static::requestWithToken('GET', '/api/users/me/books');
+
+        $this->assertResponseIsSuccessful();
+
+        /** @var UserBookRepository $userBookRepository */
+        $userBookRepository = $this->getContainer()->get('doctrine')->getRepository(UserBook::class);
+        $userBooks = $userBookRepository->findBy(['user' => static::$user]);
+
+        $this->assertCount(10, $userBooks);
+    }
+
+    public function testGetUserBooksIfEmpty(): void
+    {
+        static::requestWithToken('GET', '/api/users/me/books');
+
+        $this->assertResponseIsSuccessful();
+
+        /** @var UserBookRepository $userBookRepository */
+        $userBookRepository = $this->getContainer()->get('doctrine')->getRepository(UserBook::class);
+        $userBooks = $userBookRepository->findBy(['user' => static::$user]);
+
+        $this->assertCount(0, $userBooks);
+    }
+
+    public function testGetUserBooksFailIfNotAuthorized(): void
+    {
+        UserBookFactory::createMany(number: 10, attributes: ['user' => static::$user]);
+
+        static::createClient()->request('GET', '/api/users/me/books', [
+            'headers' => [
+                'Authorization' => 'Bearer fail',
+                'Content-Type' => 'application/json',
+            ],
         ]);
 
         $this->assertResponseStatusCodeSame(401);
