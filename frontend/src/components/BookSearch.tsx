@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {apiFetch} from "../services/api.ts";
 
 interface Book {
@@ -15,12 +15,28 @@ export const BookSearch: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [adding, setAdding] = useState<Record<string, boolean>>({})
     const [message, setMessage] = useState<string | null>(null)
+    const [userBooks, setUserBooks] = useState<Set<string>>(new Set())
+
+    useEffect(() => {
+        const fetchUserBooks = async () => {
+            try {
+                const data = await apiFetch<Book[]>('/api/users/me/books')
+                const books = data.member.map(b => b.book) as Book[]
+                const isbns = books.map(book => book.isbn).filter(Boolean) as string[]
+                setUserBooks(new Set(isbns))
+            } catch (err) {
+                setMessage("Impossible de charger vos livres existants.")
+                console.error(err)
+            }
+        }
+        fetchUserBooks()
+    }, [books])
 
     const handleSearch = async () => {
         if (!query) return;
         setLoading(true);
         try {
-            const data = await apiFetch<any>(`http://localhost:8000/api/books?q=${encodeURIComponent(query)}`);
+            const data = await apiFetch<any>(`/api/books?q=${encodeURIComponent(query)}`);
 
             setBooks(data.member ?? []);
             setMessage(null)
@@ -88,25 +104,34 @@ export const BookSearch: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {books.map((book, idx) => (
-                    <div key={idx} className="card bg-base-100 shadow-md">
-                        {book.image && <figure><img src={book.image} alt={book.title ?? "Book"} /></figure>}
-                        <div className="card-body">
-                            <h2 className="card-title">{book.title}</h2>
-                            <p className="text-sm text-gray-600">{book.authors.join(", ")}</p>
-                            {book.description && <p className="text-sm mt-2 line-clamp-3">{book.description}</p>}
-                            {book.isbn && <p className="text-xs mt-2">ISBN: {book.isbn}</p>}
+                {books.map((book, idx) => {
+                    const isAdded = book.isbn ? userBooks.has(book.isbn) : false
+                    return (
+                        <div key={idx} className="card bg-base-100 shadow-md">
+                            {book.image && <figure><img src={book.image} alt={book.title ?? "Book"} /></figure>}
+                            <div className="card-body">
+                                <h2 className="card-title">{book.title}</h2>
+                                <p className="text-sm text-gray-600">{book.authors.join(", ")}</p>
+                                {book.description && <p className="text-sm mt-2 line-clamp-3">{book.description}</p>}
+                                {book.isbn && <p className="text-xs mt-2">ISBN: {book.isbn}</p>}
 
-                            <button
-                                className="btn btn-secondary mt-2"
-                                onClick={() => handleAddBook(book)}
-                                disabled={adding[book.isbn ?? ""] ?? false}
-                            >
-                                {adding[book.isbn ?? ""] ? "Ajout en cours..." : "Ajouter à ma BookTech"}
-                            </button>
+                                <button
+                                    className={`btn mt-2 ${isAdded ? "btn-disabled" : "btn-secondary"}`}
+                                    onClick={() => handleAddBook(book)}
+                                    disabled={(isAdded || adding[book.isbn ?? ""]) ?? false}
+                                >
+                                    {isAdded
+                                        ? "Déjà dans votre BookTech"
+                                        : adding[book.isbn ?? ""] ? "Ajout en cours..." : "Ajouter à ma BookTech"
+                                    }
+                                    {isAdded && (
+                                        <div className="badge badge-success mt-2">Ajouté</div>
+                                    )}
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
         </div>
     );
