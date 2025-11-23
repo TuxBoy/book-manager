@@ -1,7 +1,8 @@
 import {getToken} from "./auth.ts";
 
-export async function apiFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
+export async function apiFetch<T>(uri: string, options: RequestInit = {}): Promise<T> {
     const token = getToken()
+    const url = `http://localhost:8000${uri}`
 
     const headers: HeadersInit = {
         "Content-Type": "application/json",
