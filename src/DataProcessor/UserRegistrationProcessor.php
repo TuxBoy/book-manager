@@ -32,4 +32,3 @@ final readonly class UserRegistrationProcessor implements ProcessorInterface
         return $user;
     }
 }
-

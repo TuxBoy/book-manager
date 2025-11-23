@@ -60,3 +60,20 @@ jobs:
                     DATABASE_URL: "postgresql://symfony:symfony@localhost:5432/symfony_test?serverVersion=15&charset=utf8"
                 run: |
                     ./vendor/bin/phpunit --testdox
+    php-cs-fixer:
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Set up PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: "8.4"
+
+            -   name: Install dependencies
+                run: composer install --no-interaction --prefer-dist
+
+            -   name: Run PHP-CS-Fixer (dry-run)
+                run: vendor/bin/php-cs-fixer fix --dry-run --diff

@@ -9,10 +9,9 @@ use ApiPlatform\Metadata\Post;
 use App\DataProcessor\AddBookToUserProcessor;
 use App\Dto\AddBookToUser;
 use App\Repository\UserBookRepository;
-use DateTimeImmutable;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
-use Doctrine\ORM\Mapping as ORM;
 
 #[Entity(repositoryClass: UserBookRepository::class)]
 #[Table(name: 'book_user')]
@@ -24,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
             input: AddBookToUser::class,
             name: 'add_book',
             processor: AddBookToUserProcessor::class,
-        )
+        ),
     ]
 )]
 class UserBook
@@ -39,7 +38,7 @@ class UserBook
         }
     }
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "userBooks")]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'userBooks')]
     #[ORM\JoinColumn(nullable: false)]
     public ?User $user = null {
         get {
@@ -50,8 +49,8 @@ class UserBook
         }
     }
 
-    #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: "userBooks", cascade: ["persist"])]
-    #[ORM\JoinColumn(name: "book_id", referencedColumnName: "id", nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: 'userBooks', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'book_id', referencedColumnName: 'id', nullable: false)]
     public ?Book $book = null {
         get {
             return $this->book;
@@ -62,7 +61,7 @@ class UserBook
     }
 
     #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
-    public DateTimeImmutable $addedAt {
+    public \DateTimeImmutable $addedAt {
         get {
             return $this->addedAt;
         }
@@ -71,7 +70,7 @@ class UserBook
         }
     }
 
-    #[ORM\Column(type: "smallint", nullable: true)]
+    #[ORM\Column(type: 'smallint', nullable: true)]
     public ?int $rating = null {
         get {
             return $this->rating;
@@ -103,6 +102,6 @@ class UserBook
 
     public function __construct()
     {
-        $this->addedAt = new DateTimeImmutable();
+        $this->addedAt = new \DateTimeImmutable();
     }
 }

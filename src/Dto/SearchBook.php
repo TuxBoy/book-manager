@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new GetCollection(
             uriTemplate: '/books',
             provider: BookCollectionDataProvider::class,
-        )
+        ),
     ],
     normalizationContext: ['groups' => ['read']],
     paginationEnabled: false

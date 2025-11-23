@@ -25,12 +25,11 @@ final class SearchBookTest extends AbstractApiTestCase
                         'description' => 'Magic book description',
                         'imageLinks' => ['thumbnail' => 'http://example.com/thumb.jpg'],
                         'industryIdentifiers' => [
-                            ['type' => 'ISBN_13', 'identifier' => '9782070368228']
+                            ['type' => 'ISBN_13', 'identifier' => '9782070368228'],
                         ],
                     ],
                 ],
             ]);
-
 
         $client->getContainer()->set(BookGoogleApiService::class, $mockApiService);
 

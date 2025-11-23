@@ -12,7 +12,6 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
  */
 final class UserFactory extends PersistentObjectFactory
 {
-
     protected function defaults(): array|callable
     {
         return [

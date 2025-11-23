@@ -7,8 +7,8 @@ namespace App\Entity;
 use App\Repository\BookRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Entity;
 
 #[Entity(repositoryClass: BookRepository::class)]
 class Book
@@ -73,7 +73,7 @@ class Book
         }
     }
 
-    #[ORM\OneToMany(targetEntity: UserBook::class, mappedBy: 'book', cascade: ["persist", "remove"])]
+    #[ORM\OneToMany(targetEntity: UserBook::class, mappedBy: 'book', cascade: ['persist', 'remove'])]
     private Collection $userBooks {
         get {
             return $this->userBooks;
@@ -91,6 +91,7 @@ class Book
             $this->userBooks->add($userBook);
             $userBook->book = $this;
         }
+
         return $this;
     }
 }

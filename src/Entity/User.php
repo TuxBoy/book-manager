@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
             uriTemplate: '/register',
             input: RegisterUserInput::class,
             processor: UserRegistrationProcessor::class,
-        )
+        ),
     ]
 )]
 #[ORM\Table(name: 'users')]
@@ -31,13 +31,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[ORM\Column(type:"string", length:180, unique:true)]
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column(type:"string")]
+    #[ORM\Column(type: 'string')]
     private ?string $password = null;
 
-    #[ORM\OneToMany(targetEntity: UserBook::class, mappedBy: "user", cascade: ["persist", "remove"])]
+    #[ORM\OneToMany(targetEntity: UserBook::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private Collection $userBooks;
 
     public function __construct()
@@ -58,6 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -69,6 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -82,7 +84,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function eraseCredentials(): void {}
+    public function eraseCredentials(): void
+    {
+    }
 
     public function addUserBook(UserBook $userBook): self
     {
@@ -105,6 +109,3 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 }
-
-
-

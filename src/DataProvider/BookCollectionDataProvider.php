@@ -8,7 +8,6 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Dto\SearchBook;
 use App\Service\BookApiServiceInterface;
-use App\Service\BookGoogleApiService;
 
 final readonly class BookCollectionDataProvider implements ProviderInterface
 {
@@ -40,7 +39,7 @@ final readonly class BookCollectionDataProvider implements ProviderInterface
             $book->image = $info['imageLinks']['thumbnail'] ?? null;
 
             foreach ($info['industryIdentifiers'] ?? [] as $id) {
-                if ($id['type'] === 'ISBN_13') {
+                if ('ISBN_13' === $id['type']) {
                     $book->isbn = $id['identifier'];
                     break;
                 }

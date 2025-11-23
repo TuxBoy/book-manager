@@ -13,7 +13,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 
 abstract class AbstractApiTestCase extends ApiTestCase
 {
-    use ResetDatabase, Factories;
+    use ResetDatabase;
+    use Factories;
 
     protected static User $user;
 
@@ -36,9 +37,9 @@ abstract class AbstractApiTestCase extends ApiTestCase
 
         $options += [
             'headers' => [
-                'Authorization' => 'Bearer ' . $token,
+                'Authorization' => 'Bearer '.$token,
                 'Content-Type' => 'application/json',
-            ]
+            ],
         ];
 
         return static::createClient()->request($method, $url, $options);

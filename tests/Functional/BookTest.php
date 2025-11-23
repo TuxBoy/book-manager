@@ -15,7 +15,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 
 final class BookTest extends AbstractApiTestCase
 {
-    use ResetDatabase, Factories;
+    use ResetDatabase;
+    use Factories;
 
     public function testAddBookToUserBookTech(): void
     {
@@ -28,7 +29,7 @@ final class BookTest extends AbstractApiTestCase
         ];
 
         static::requestWithToken('POST', '/api/users/me/books', [
-            'json' => $payload
+            'json' => $payload,
         ]);
 
         $this->assertResponseIsSuccessful();
@@ -37,9 +38,8 @@ final class BookTest extends AbstractApiTestCase
             'book' => [
                 'isbn' => '9782070368228',
                 'title' => 'Test Book',
-            ]
+            ],
         ]);
-
 
         /** @var UserBookRepository $userBookRepository */
         $userBookRepository = $this->getContainer()->get('doctrine')->getRepository(UserBook::class);
@@ -66,10 +66,10 @@ final class BookTest extends AbstractApiTestCase
 
         $response = static::createClient()->request('POST', '/api/users/me/books', [
             'headers' => [
-                'Authorization' => 'Bearer ' . $token,
+                'Authorization' => 'Bearer '.$token,
                 'Content-Type' => 'application/json',
             ],
-            'json' => $payload
+            'json' => $payload,
         ]);
 
         $this->assertResponseStatusCodeSame(422);
@@ -90,7 +90,7 @@ final class BookTest extends AbstractApiTestCase
                 'Authorization' => 'Bearer fail',
                 'Content-Type' => 'application/json',
             ],
-            'json' => $payload
+            'json' => $payload,
         ]);
 
         $this->assertResponseStatusCodeSame(401);
@@ -99,12 +99,12 @@ final class BookTest extends AbstractApiTestCase
     public static function provideBookData(): iterable
     {
         $data = static fn (array $data): array => $data + [
-                'isbn' => '9782070368228',
-                'title' => 'Test Book',
-                'authors' => ['John Doe'],
-                'description' => 'Book description',
-                'image' => 'https://example.com/image.jpg',
-         ];
+            'isbn' => '9782070368228',
+            'title' => 'Test Book',
+            'authors' => ['John Doe'],
+            'description' => 'Book description',
+            'image' => 'https://example.com/image.jpg',
+        ];
 
         yield 'isbn is empty' => [$data(['isbn' => ''])];
         yield 'title is empty' => [$data(['title' => ''])];

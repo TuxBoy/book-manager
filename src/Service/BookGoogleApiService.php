@@ -19,7 +19,7 @@ final readonly class BookGoogleApiService implements BookApiServiceInterface
             'query' => [
                 'q' => $query,
                 'maxResults' => 20,
-            ]
+            ],
         ]);
 
         $data = $response->toArray();
