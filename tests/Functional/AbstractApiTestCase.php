@@ -35,12 +35,12 @@ abstract class AbstractApiTestCase extends ApiTestCase
             ->get('lexik_jwt_authentication.jwt_manager')
             ->create(static::$user);
 
-        $options += [
+        $options = array_merge_recursive([
             'headers' => [
                 'Authorization' => 'Bearer '.$token,
                 'Content-Type' => 'application/json',
             ],
-        ];
+        ], $options);
 
         return static::createClient()->request($method, $url, $options);
     }

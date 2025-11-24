@@ -126,6 +126,28 @@ final class BookTest extends AbstractApiTestCase
         $this->assertCount(0, $userBooks);
     }
 
+    public function testUpdateUserBooksSuccessful(): void
+    {
+        /** @var UserBook $userBook */
+        $userBook = UserBookFactory::createOne(['user' => static::$user, 'comment' => 'old comment']);
+
+        static::requestWithToken('PATCH', '/api/users/me/books/'.$userBook->id, [
+            'json' => [
+                'comment' => 'Test comment',
+                'rating' => 5,
+                'readingStatus' => 'read',
+            ],
+        ]);
+
+        $this->assertResponseIsSuccessful();
+
+        /** @var UserBookRepository $userBookRepository */
+        $userBookRepository = $this->getContainer()->get('doctrine')->getRepository(UserBook::class);
+        $updated = $userBookRepository->find($userBook->id);
+
+        $this->assertEquals('Test comment', $updated->comment);
+    }
+
     public function testGetUserBooksFailIfNotAuthorized(): void
     {
         UserBookFactory::createMany(number: 10, attributes: ['user' => static::$user]);

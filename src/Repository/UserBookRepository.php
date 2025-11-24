@@ -24,4 +24,13 @@ final class UserBookRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($userBook);
         $this->getEntityManager()->flush();
     }
+
+    public function findById(int $id): ?UserBook
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
