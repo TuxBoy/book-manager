@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\DataProcessor\UserRegistrationProcessor;
+use App\DataProvider\CurrentUserProvider;
 use App\Dto\RegisterUserInput;
+use App\Dto\UserProfileOutput;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -23,6 +26,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
             input: RegisterUserInput::class,
             processor: UserRegistrationProcessor::class,
         ),
+        new Get(
+            uriTemplate: '/users/me',
+            output: UserProfileOutput::class,
+            provider: CurrentUserProvider::class,
+        ),
     ]
 )]
 #[ORM\Table(name: 'users')]
@@ -33,6 +41,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private ?string $email = null;
+
+    #[ORM\Column(type: 'string', length: 180)]
+    private ?string $username = null;
 
     #[ORM\Column(type: 'string')]
     private ?string $password = null;
@@ -81,7 +92,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        return $this->email;
+        return $this->username ?? $this->email;
     }
 
     public function eraseCredentials(): void
@@ -107,5 +118,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function getLogin(): string
+    {
+        return $this->username;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setUsername(?string $username): void
+    {
+        $this->username = $username;
     }
 }

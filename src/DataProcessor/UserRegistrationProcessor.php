@@ -6,11 +6,16 @@ namespace App\DataProcessor;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use App\Dto\RegisterUserInput;
+use App\Dto\UserProfileOutput;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+/**
+ * @implements ProcessorInterface<RegisterUserInput, UserProfileOutput>
+ */
 #[AsController]
 final readonly class UserRegistrationProcessor implements ProcessorInterface
 {
@@ -20,15 +25,16 @@ final readonly class UserRegistrationProcessor implements ProcessorInterface
     ) {
     }
 
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): User
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): UserProfileOutput
     {
         $user = new User();
         $user->setEmail($data->email);
+        $user->setUsername($data->username);
         $user->setPassword($this->passwordHasher->hashPassword($user, $data->password));
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        return $user;
+        return UserProfileOutput::fromEntity($user);
     }
 }

@@ -31,7 +31,8 @@
         "symfony/twig-bundle": "7.3.*",
         "symfony/validator": "7.3.*",
         "symfony/yaml": "7.3.*",
-        "webmozart/assert": "^1.12"
+        "webmozart/assert": "^1.12",
+        "ext-cassandra": "*"
     },
     "config": {
         "allow-plugins": {
