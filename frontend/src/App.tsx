@@ -8,9 +8,11 @@ import {getToken} from "./services/auth.ts";
 import {BookTech} from "./components/BookTech.tsx";
 import {ToastProvider} from "./Context/ToastContext.tsx";
 import {ToastContainer} from "./components/ToastContainer.tsx";
+import {useCurrentUser} from "./hooks/useUser.ts";
 
 export default function App() {
     const token = getToken()
+    const { user } = useCurrentUser()
 
     return (
         <div data-theme="dark" className="min-h-screen bg-gray-900 text-white">
@@ -18,10 +20,10 @@ export default function App() {
                 <BrowserRouter>
                     <nav className="p-4 bg-gray-800 flex justify-between">
                         <div className="space-x-4">
-                            <Link to="/register" className="btn btn-ghost">Register</Link>
-                            <Link to="/login" className="btn btn-ghost">Login</Link>
+                            {!token && <Link to="/register" className="btn btn-ghost">Register</Link>}
+                            {!token && <Link to="/login" className="btn btn-ghost">Login</Link>}
                             {token && <Link to="/books/search" className="btn btn-ghost">Rechercher un livre</Link>}
-                            {token && <Link to="/books" className="btn btn-ghost">Ma BookTech</Link>}
+                            {token && <Link to="/books" className="btn btn-ghost">Ma BookTech({user?.username})</Link>}
                             {token && <Link to="/logout" className="btn btn-ghost">Se déconnecter</Link>}
                         </div>
                     </nav>

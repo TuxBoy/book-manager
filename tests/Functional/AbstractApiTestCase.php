@@ -25,6 +25,8 @@ abstract class AbstractApiTestCase extends ApiTestCase
         static::$alwaysBootKernel = false;
 
         static::$user = UserFactory::createOne([
+            'email' => 'doe@email.fr',
+            'username' => 'dummy',
             'password' => password_hash('password', PASSWORD_BCRYPT),
         ]);
     }

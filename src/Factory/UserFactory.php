@@ -16,6 +16,7 @@ final class UserFactory extends PersistentObjectFactory
     {
         return [
             'email' => self::faker()->email(),
+            'username' => self::faker()->username(),
             'password' => password_hash('password', PASSWORD_BCRYPT),
         ];
     }
