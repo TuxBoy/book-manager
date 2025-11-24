@@ -11,6 +11,10 @@ phpstan := "vendor/bin/phpstan"
 # Commandes
 # -----------------------------------------
 
+dev:
+    symfony server:start -d
+    docker compose up -d
+
 # Vérifie le style de code Symfony sans modifier les fichiers
 cs-check:
     {{php-cs-fixer}} fix --dry-run --diff --allow-risky=yes

@@ -41,6 +41,7 @@ final readonly class AddBookToUserProcessor implements ProcessorInterface
             $book->isbn = $data->isbn;
             $book->title = $data->title;
             $book->authors = $data->authors;
+            $book->image = $data->image;
             $book->description = $data->description;
 
             $this->bookRepository->save($book);

@@ -5,11 +5,16 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\DataProcessor\AddBookToUserProcessor;
+use App\DataProcessor\UpdateUserBookProcessor;
 use App\DataProvider\GetUserBooksCollectionProvider;
+use App\DataProvider\UserBookItemProvider;
 use App\Dto\AddBookToUser;
+use App\Dto\UpdateUserBook;
 use App\Repository\UserBookRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
@@ -30,6 +35,20 @@ use Doctrine\ORM\Mapping\Table;
             uriTemplate: '/users/me/books',
             security: "is_granted('ROLE_USER')",
             provider: GetUserBooksCollectionProvider::class,
+        ),
+        new Get(
+            uriTemplate: '/users/books/{id}',
+            security: "is_granted('ROLE_USER')",
+            provider: UserBookItemProvider::class,
+        ),
+        new Patch(
+            uriTemplate: '/users/me/books/{id}',
+            inputFormats: ['json' => ['application/json'], 'merge-patch' => ['application/merge-patch+json']],
+            security: "is_granted('ROLE_USER')",
+            input: UpdateUserBook::class,
+            name: 'update_book',
+            provider: UserBookItemProvider::class,
+            processor: UpdateUserBookProcessor::class,
         ),
     ]
 )]
@@ -56,7 +75,7 @@ class UserBook
         }
     }
 
-    #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: 'userBooks', cascade: ['persist'])]
+    #[ORM\ManyToOne(targetEntity: Book::class, cascade: ['persist'], inversedBy: 'userBooks')]
     #[ORM\JoinColumn(name: 'book_id', referencedColumnName: 'id', nullable: false)]
     public ?Book $book = null {
         get {

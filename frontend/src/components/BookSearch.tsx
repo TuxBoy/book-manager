@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {apiFetch} from "../services/api.ts";
+import {useToast} from "../hooks/useToast.ts";
 
 interface Book {
     title: string | null;
@@ -14,23 +15,24 @@ export const BookSearch: React.FC = () => {
     const [books, setBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState(false);
     const [adding, setAdding] = useState<Record<string, boolean>>({})
-    const [message, setMessage] = useState<string | null>(null)
     const [userBooks, setUserBooks] = useState<Set<string>>(new Set())
+
+    const toast = useToast()
 
     useEffect(() => {
         const fetchUserBooks = async () => {
             try {
-                const data = await apiFetch<Book[]>('/api/users/me/books')
-                const books = data.member.map(b => b.book) as Book[]
+                const data = await apiFetch<any>('/api/users/me/books')
+                const books = data.member.map((b: any) => b.book) as Book[]
                 const isbns = books.map(book => book.isbn).filter(Boolean) as string[]
                 setUserBooks(new Set(isbns))
             } catch (err) {
-                setMessage("Impossible de charger vos livres existants.")
+                toast("Impossible de charger vos livres existants.", "error")
                 console.error(err)
             }
         }
         fetchUserBooks()
-    }, [books])
+    }, [])
 
     const handleSearch = async () => {
         if (!query) return;
@@ -39,7 +41,6 @@ export const BookSearch: React.FC = () => {
             const data = await apiFetch<any>(`/api/books?q=${encodeURIComponent(query)}`);
 
             setBooks(data.member ?? []);
-            setMessage(null)
         } catch (err) {
             console.error(err);
         } finally {
@@ -55,7 +56,7 @@ export const BookSearch: React.FC = () => {
         setAdding((prev) => ({...prev, [book.isbn!]: true}));
 
         try {
-            await apiFetch(`http://localhost:8000/api/users/me/books`, {
+            await apiFetch(`/api/users/me/books`, {
                 method: 'POST',
                 body: JSON.stringify({
                     isbn: book.isbn,
@@ -65,10 +66,11 @@ export const BookSearch: React.FC = () => {
                     authors: book.authors
                 }),
             })
-            setMessage(`Le livre "${book.title}" a été ajouté à votre BookTech !`);
+            setUserBooks((prev) => new Set(prev).add(book.isbn!))
+            toast(`Le livre "${book.title}" a été ajouté à votre BookTech !`);
         } catch (err) {
             console.error(err)
-            setMessage("Erreur lors de l'ajout du livre. Vérifiez que vous êtes connecté.");
+            toast("Erreur lors de l'ajout du livre. Vérifiez que vous êtes connecté.", "error");
         } finally {
             setAdding((prev) => ({ ...prev, [book.isbn!]: false }));
         }
@@ -77,14 +79,6 @@ export const BookSearch: React.FC = () => {
     return (
         <div className="min-h-screen bg-base-100 text-base-content p-6">
             <h1 className="text-3xl font-bold mb-6">Rechercher un livre</h1>
-
-            {message && (
-                <div className="alert alert-info mb-4 shadow-lg">
-                    <div>
-                        <span>{message}</span>
-                    </div>
-                </div>
-            )}
 
             <div className="flex gap-2 mb-6">
                 <input
@@ -118,7 +112,7 @@ export const BookSearch: React.FC = () => {
                                 <button
                                     className={`btn mt-2 ${isAdded ? "btn-disabled" : "btn-secondary"}`}
                                     onClick={() => handleAddBook(book)}
-                                    disabled={(isAdded || adding[book.isbn ?? ""]) ?? false}
+                                    disabled={isAdded || adding[book.isbn ?? ""]}
                                 >
                                     {isAdded
                                         ? "Déjà dans votre BookTech"
