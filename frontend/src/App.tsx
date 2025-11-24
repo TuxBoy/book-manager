@@ -9,10 +9,11 @@ import {BookTech} from "./components/BookTech.tsx";
 import {ToastProvider} from "./Context/ToastContext.tsx";
 import {ToastContainer} from "./components/ToastContainer.tsx";
 import {useCurrentUser} from "./hooks/useUser.ts";
+import Home from "./components/Home.tsx";
 
-export default function App() {
+export function App() {
     const token = getToken()
-    const { user } = useCurrentUser()
+    const {user} = useCurrentUser()
 
     return (
         <div data-theme="dark" className="min-h-screen bg-gray-900 text-white">
@@ -22,6 +23,7 @@ export default function App() {
                         <div className="space-x-4">
                             {!token && <Link to="/register" className="btn btn-ghost">Register</Link>}
                             {!token && <Link to="/login" className="btn btn-ghost">Login</Link>}
+                            {token && <Link to="/" className="btn btn-ghost">Home</Link>}
                             {token && <Link to="/books/search" className="btn btn-ghost">Rechercher un livre</Link>}
                             {token && <Link to="/books" className="btn btn-ghost">Ma BookTech({user?.username})</Link>}
                             {token && <Link to="/logout" className="btn btn-ghost">Se déconnecter</Link>}
@@ -29,27 +31,32 @@ export default function App() {
                     </nav>
                     <div className="p-4">
                         <Routes>
-                            <Route path="/register" element={<Register />} />
-                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />}/>
+                            <Route path="/login" element={<Login />}/>
+                            <Route path="/" element={
+                                <PrivateRoute>
+                                    <Home/>
+                                </PrivateRoute>
+                            }/>
                             <Route path="/books/search" element={
                                 <PrivateRoute>
-                                    <BookSearch />
+                                    <BookSearch/>
                                 </PrivateRoute>
-                            } />
+                            }/>
                             <Route path="/books" element={
                                 <PrivateRoute>
-                                    <BookTech />
+                                    <BookTech/>
                                 </PrivateRoute>
-                            } />
+                            }/>
                             <Route path="/logout" element={
                                 <PrivateRoute>
-                                    <Logout />
+                                    <Logout/>
                                 </PrivateRoute>
-                            } />
+                            }/>
                         </Routes>
                     </div>
                 </BrowserRouter>
-                <ToastContainer />
+                <ToastContainer/>
             </ToastProvider>
         </div>
     );

@@ -23,7 +23,7 @@ export async function apiFetch<T>(uri: string, options: RequestInit = {}): Promi
             data?.code === "401_expired"
         ) {
             // nettoyer le token
-            localStorage.removeItem("token");
+            localStorage.removeItem("jwt");
 
             // redirection login
             window.location.href = "/login";

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import {useAuth} from "../hooks/useAuth.ts";
+import {useNavigate} from "react-router-dom";
 
 export function Login() {
     const { handleLogin, loading, error, token } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -12,7 +14,7 @@ export function Login() {
     }
 
     if (token) {
-        return <p>Vous êtes connecté</p>
+        return navigate('/')
     }
 
     return (
