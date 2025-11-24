@@ -14,7 +14,7 @@ export function Login() {
     }
 
     if (token) {
-        return navigate('/')
+        navigate('/')
     }
 
     return (
