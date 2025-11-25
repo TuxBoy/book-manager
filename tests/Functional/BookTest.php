@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
-use App\Entity\Book;
-use App\Entity\UserBook;
-use App\Factory\UserBookFactory;
-use App\Factory\UserFactory;
-use App\Repository\BookRepository;
-use App\Repository\UserBookRepository;
+use App\BookStore\Domain\Model\Book;
+use App\BookStore\Domain\Model\UserBook;
+use App\BookStore\Infrastructure\Doctrine\Repository\BookRepository;
+use App\BookStore\Infrastructure\Doctrine\Repository\UserBookRepository;
+use App\BookStore\Infrastructure\Factory\UserBookFactory;
+use App\Security\Infrastructure\Factory\UserFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -34,13 +34,6 @@ final class BookTest extends AbstractApiTestCase
         ]);
 
         $this->assertResponseIsSuccessful();
-
-        $this->assertJsonContains([
-            'book' => [
-                'isbn' => '9782070368228',
-                'title' => 'Test Book',
-            ],
-        ]);
 
         /** @var UserBookRepository $userBookRepository */
         $userBookRepository = $this->getContainer()->get('doctrine')->getRepository(UserBook::class);

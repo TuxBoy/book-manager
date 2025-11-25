@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
-use App\Repository\UserRepository;
+use App\Security\Infrastructure\Doctrine\Repository\UserRepository;
 
 final class UserTest extends AbstractApiTestCase
 {

@@ -21,7 +21,6 @@ export function useCurrentUser() {
         const fetchUser = async () => {
             try {
                 const data = await apiFetch<User>('/api/users/me')
-                console.log(data)
                 setUser(data)
             } catch (err: any) {
                 console.error(err)

@@ -38,7 +38,7 @@ export const BookSearch: React.FC = () => {
         if (!query) return;
         setLoading(true);
         try {
-            const data = await apiFetch<any>(`/api/books?q=${encodeURIComponent(query)}`);
+            const data = await apiFetch<any>(`/api/books/search?q=${encodeURIComponent(query)}`);
 
             setBooks(data.member ?? []);
         } catch (err) {

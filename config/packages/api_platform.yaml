@@ -3,7 +3,8 @@ api_platform:
     version: 1.0.0
     mapping:
         paths:
-            - '%kernel.project_dir%/src/Entity'
+            - '%kernel.project_dir%/src/BookStore/Domain/Model'
+            - '%kernel.project_dir%/src/Security/Domain/Model'
     defaults:
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']

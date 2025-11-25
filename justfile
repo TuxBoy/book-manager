@@ -15,6 +15,10 @@ dev:
     symfony server:start -d
     docker compose up -d
 
+stop:
+    symfony server:stop
+    docker compose down
+
 # Vérifie le style de code Symfony sans modifier les fichiers
 cs-check:
     {{php-cs-fixer}} fix --dry-run --diff --allow-risky=yes
