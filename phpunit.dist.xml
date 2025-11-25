@@ -17,7 +17,7 @@
         <server name="JWT_PUBLIC_KEY"  value="%kernel.project_dir%/config/jwt_test/public.pem"/>
         <server name="JWT_PASSPHRASE"  value=""/>
         <server name="APP_ENV" value="test" force="true" />
-        <server name="KERNEL_CLASS" value="App\Kernel" force="true" />
+        <server name="KERNEL_CLASS" value="App\Shared\Infrastructure\Symfony\Kernel" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
     </php>
 

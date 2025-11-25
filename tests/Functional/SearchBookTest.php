@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
-use App\Service\BookApiServiceInterface;
-use App\Service\BookGoogleApiService;
+use App\BookStore\Domain\Port\Service\BookApiServiceInterface;
+use App\BookStore\Infrastructure\Service\BookGoogleApiService;
 
 final class SearchBookTest extends AbstractApiTestCase
 {
@@ -33,7 +33,7 @@ final class SearchBookTest extends AbstractApiTestCase
 
         $client->getContainer()->set(BookGoogleApiService::class, $mockApiService);
 
-        $response = static::requestWithToken('GET', '/api/books', ['query' => ['q' => 'Harry Potter']]);
+        $response = static::requestWithToken('GET', '/api/books/search', ['query' => ['q' => 'Harry Potter']]);
 
         $this->assertResponseIsSuccessful();
 
